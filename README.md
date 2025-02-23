@@ -75,3 +75,57 @@ You will create a smart contract that manages two main operations:
 - Contract: [./src/RewardingVault.sol](./src/RewardingVault.sol)
 - Test file: [./test/RewardingVault.t.sol](./test/RewardingVault.t.sol)
 
+### Time locked vault
+
+Implement and test a “Vault with Time-Locked Withdrawals and Access Control”. The vault will allow depositors to store Ether, and all withdrawals from the vault must be requested in advance, respecting a configurable “withdrawal delay.” Additionally, the contract must enforce role-based access control for configuring certain parameters (like the withdrawal delay).
+
+1. Requirements
+
+    - Deposits
+        - Anyone can deposit Ether into the vault.
+        - Keep track of each depositor’s balance.
+
+    - Withdrawal Requests
+        - Before withdrawing, a user must submit a withdrawal request.
+        - Store a timestamp indicating when the user’s withdrawal request will become valid.
+        - Only one request can be active per user at a time.
+
+    - Time-Locked Withdrawals
+        - Users can only withdraw their Ether after their withdrawal request matures (i.e., after the withdrawalDelay time).
+        - If a user’s request is valid, they can withdraw up to the amount they have requested (or their full balance if you prefer).
+        - Once withdrawn, the withdrawal request resets (the user needs to make a new request for another withdrawal).
+
+    - Access Control
+        - Introduce a role (e.g., ADMIN) that is allowed to change the withdrawalDelay.
+        - At contract deployment, the contract deployer is the default ADMIN.
+        - Other addresses can be granted or revoked the ADMIN role by existing admins.
+        - Use a simple approach for role management (it doesn’t have to be a full library like OpenZeppelin AccessControl—feel free to build minimal custom logic).
+
+    - Testing
+        - Write a comprehensive test suite in Foundry.
+        - Unit Tests: Check deposit logic, withdrawal request logic, and actual withdrawal.
+
+    - Security Considerations
+        - Ensure no reentrancy vulnerabilities.
+        - Validate that role checks are enforced.
+
+**Code**
+
+- Contract: [./src/TimeLockedVault.sol](./src/TimeLockedVault.sol)
+- Test file: [./test/TimeLockedVault.t.sol](./test/TimeLockedVault.t.sol)
+
+### ERC-20 token with extra functionality
+
+You will be tasked with developing a simplified version of an ERC-20 token contract with some added functionality.
+
+Specifically:
+
+- Token Basics: The contract should implement the basic ERC-20 interface (e.g., transfer, balanceOf, approve, allowance).
+- Minting:  The contract should allow a designated "minter" address to mint new tokens.
+- Burning: The contract should allow token holders to burn their own tokens.
+- Pausable: The contract should have a "pausable" feature, controlled by the minter, that can temporarily halt all token transfers.
+- Security:  The contract must be written with security best practices in mind to prevent common vulnerabilities.
+
+**Code**
+
+- Contract: [./src/ERC20Extra.sol](./src/ERC20Extra.sol)
