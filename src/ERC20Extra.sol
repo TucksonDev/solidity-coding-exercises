@@ -131,24 +131,28 @@ contract ERC20Extra {
         if (to == address(0)) {
             revert TransferToZero();
         }
-        if ((msg.sender != from) && (allowances[from][msg.sender] < amount)) {
-            revert NotEnoughAllowance();
-        }
+        if (msg.sender != from) {
+            if (allowances[from][msg.sender] < amount) {
+                revert NotEnoughAllowance();
+            }
 
-        // Update allowances
-        allowances[from][msg.sender] -= amount;
+            // Update allowances
+            allowances[from][msg.sender] -= amount;
+        }
 
         bool result = _transfer(from, to, amount);
         emit Transfer(from, to, amount);
         return result;
     }
 
-    function approve(address spender, uint256 amount) external {
+    function approve(address spender, uint256 amount) external returns (bool) {
         if (spender == address(0)) {
             revert ApproveToZero();
         }
         allowances[msg.sender][spender] = amount;
         emit Approve(msg.sender, spender, amount);
+
+        return true;
     }
 
     function burn(uint256 amount) external {
