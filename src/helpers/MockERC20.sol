@@ -30,4 +30,13 @@ contract MockERC20 {
     function transferOwnership(address newOwner) external onlyOwner {
         owner = newOwner;
     }
+
+    function transfer(address receiver, uint256 amount) external returns (bool) {
+        require(balances[msg.sender] >= amount, "Not enough balance");
+
+        balances[msg.sender] -= amount;
+        balances[receiver] += amount;
+
+        return true;
+    }
 }

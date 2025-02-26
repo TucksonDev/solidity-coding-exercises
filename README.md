@@ -129,3 +129,23 @@ Specifically:
 **Code**
 
 - Contract: [./src/ERC20Extra.sol](./src/ERC20Extra.sol)
+
+### Staking Contract with Reward Dripping
+
+You need to implement an ETH staking contract where:
+- Users can deposit ETH and start accumulating rewards over time.
+- The contract rewards users with an ERC20 token at a fixed rate per second, proportional to their stake.
+- Users can withdraw rewards anytime without unstaking.
+- Users can unstake their ETH at any moment, but accumulated rewards remain claimable.
+
+Requirements:
+- Staking ETH: Users deposit ETH into the contract.
+- Reward Calculation: Rewards should accrue based on staking time and amount.
+- Claiming Rewards: Users can withdraw their rewards without unstaking.
+- Unstaking ETH: Users can withdraw their initial stake, stopping further reward accumulation.
+- ERC20 Reward Token: Implement an ERC20 token to distribute as rewards.
+
+**Code**
+
+- Contract: [./src/DrippingStakeVault.sol](./src/DrippingStakeVault.sol)
+- Test file: [./test/DrippingStakeVault.t.sol](./test/DrippingStakeVault.t.sol)
