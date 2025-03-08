@@ -149,3 +149,67 @@ Requirements:
 
 - Contract: [./src/DrippingStakeVault.sol](./src/DrippingStakeVault.sol)
 - Test file: [./test/DrippingStakeVault.t.sol](./test/DrippingStakeVault.t.sol)
+
+### Staking rewards
+
+Objective: Design, implement, and test a "Staking Rewards" smart contract system on Ethereum. The system should allow users to stake an ERC20 token, earn rewards in the same token over time, and withdraw their stake and rewards.
+
+Requirements:
+- Contract Structure:
+    - Create a StakingRewards contract that integrates with an existing ERC20 token (e.g., use OpenZeppelin’s ERC20 for simplicity).
+    - Users can stake tokens by calling a stake(uint256 amount) function.
+    - Users earn rewards based on the time their tokens are staked and a predefined reward rate (e.g., 10% APY, simplified for this exercise).
+    - Users can withdraw their stake and rewards with a withdraw() function.
+    - Include a getReward() function to claim rewards without withdrawing the stake.
+
+- Security Features:
+    - Protect against reentrancy attacks.
+    - Ensure only the token owner can stake their tokens (leverage ERC20 allowances).
+    - Prevent reward calculation manipulation (e.g., flash loan exploits).
+
+- Testing:
+    - Write at least 3 test cases in Foundry:
+        - Test successful staking and reward calculation.
+        - Test withdrawal of stake and rewards.
+        - Test a failure case (e.g., withdrawing more than staked).
+    - Use Foundry’s vm.warp to simulate time passing for reward accrual.
+
+- Assumptions:
+    - For simplicity, assume the reward pool is pre-funded (e.g., the contract starts with enough ERC20 tokens to pay rewards).
+    - Use a simple linear reward formula: reward = stakedAmount * rewardRate * timeStaked, where rewardRate is a fixed value you define (e.g., 10% per year, adjusted for block timestamps).
+
+**Code**
+
+- Contract: [./src/StakingRewards.sol](./src/StakingRewards.sol)
+
+### Subscription service
+
+Implement a “Subscription Service” smart contract with these rules and constraints:
+
+- Subscription Model
+    - Users can “subscribe” by paying a certain fee, which grants them access to the service for a period (e.g., 30 days).
+    - The subscription fee and subscription duration should be configurable by the contract owner.
+
+- Renewals & Expiration
+    - A user can renew their subscription before it expires.
+    - If a subscription expires, they must pay the fee again to reactivate it.
+
+- Access Control & Ownership
+    - Use a suitable ownership pattern (e.g., Ownable or a custom approach) to restrict certain functionality to the contract owner (for example, changing the subscription fee or duration).
+
+- Robust Payable Handling
+    - Carefully handle incoming payments to avoid re-entrancy vulnerabilities.
+    - Any leftover funds beyond the subscription fee should revert or be handled gracefully (depending on your design decision).
+
+- Data Structures & Mapping
+    - Efficiently track user subscription status and expiry timestamps.
+
+- Withdrawals
+    - The contract owner should be able to withdraw accumulated subscription fees.
+
+- Error Handling & Edge Cases
+    - Consider what happens if a user sends too little ether, tries to renew an already-active subscription, etc.
+
+**Code**
+
+- Contract: [./src/SubscriptionService.sol](./src/SubscriptionService.sol)
