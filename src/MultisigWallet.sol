@@ -14,14 +14,14 @@ contract MultisigWallet {
 
     // Owners
     // Maximum amount = type(uint8).max
-    mapping (address => bool) public owners;
+    mapping(address => bool) public owners;
     uint8 public ownersCount;
 
     // Confirmation threshold (expected less than 256 owners)
     uint8 public confirmationThreshold;
 
     // Transactions (nonce => Transaction)
-    mapping (uint256 => Transaction) public transactions;
+    mapping(uint256 => Transaction) public transactions;
     uint256 public nonce;
 
     // Errors
@@ -91,7 +91,7 @@ contract MultisigWallet {
         if (_confirmationThreshold == 0) {
             revert ZeroThreshold();
         }
-        
+
         confirmationThreshold = _confirmationThreshold;
     }
 
@@ -106,7 +106,7 @@ contract MultisigWallet {
         if (ownersCount + 1 > type(uint8).max) {
             revert TooManyOwners();
         }
-        
+
         owners[newOwner] = true;
         ownersCount++;
 
@@ -200,7 +200,7 @@ contract MultisigWallet {
         emit TransactionExecuted(_nonce);
     }
 
-    function isOwner(address owner) public view returns(bool) {
+    function isOwner(address owner) public view returns (bool) {
         return owners[owner];
     }
 }

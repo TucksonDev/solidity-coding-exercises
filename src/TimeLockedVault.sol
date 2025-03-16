@@ -3,15 +3,15 @@ pragma solidity ^0.8.0;
 
 contract TimeLockedVault {
     struct WithdrawalRequest {
-        uint256 blockNumber;    // 0 if no request created
+        uint256 blockNumber; // 0 if no request created
         uint256 amount;
     }
 
     // Mapping from address to ETH balance
-    mapping (address => uint256) public balances;
+    mapping(address => uint256) public balances;
 
     // Mapping from address to block when the last withdrawal request was made
-    mapping (address => WithdrawalRequest) public withdrawalRequests;
+    mapping(address => WithdrawalRequest) public withdrawalRequests;
 
     // Withdrawal delay (0 is allowed)
     uint256 public withdrawalDelayBlocks;
@@ -36,7 +36,7 @@ contract TimeLockedVault {
     error ErrorSendingEth();
 
     // Modifiers
-    modifier onlyOwner {
+    modifier onlyOwner() {
         if (msg.sender != owner) {
             revert NotOwner();
         }
@@ -86,10 +86,7 @@ contract TimeLockedVault {
             revert NotEnoughBalance();
         }
 
-        withdrawalRequests[msg.sender] = WithdrawalRequest (
-            block.number + withdrawalDelayBlocks,
-            amount
-        );
+        withdrawalRequests[msg.sender] = WithdrawalRequest(block.number + withdrawalDelayBlocks, amount);
 
         emit WithdrawRequested(msg.sender, amount);
     }

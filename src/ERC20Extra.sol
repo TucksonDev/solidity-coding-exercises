@@ -11,10 +11,10 @@ contract ERC20Extra {
     address public minter;
     bool public paused;
 
-    mapping (address => uint256) balances;
+    mapping(address => uint256) balances;
 
     // owner => spender => allowance
-    mapping (address => mapping (address => uint256)) allowances;
+    mapping(address => mapping(address => uint256)) allowances;
 
     // Events
     event Transfer(address indexed from, address indexed to, uint256 amount);
@@ -46,12 +46,7 @@ contract ERC20Extra {
         _;
     }
 
-    constructor (
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals,
-        address _minter
-    ) {
+    constructor(string memory _name, string memory _symbol, uint8 _decimals, address _minter) {
         if (_minter == address(0)) {
             revert MinterIsZero();
         }
@@ -107,11 +102,10 @@ contract ERC20Extra {
         return true;
     }
 
-
     //////////////////////
     // Public functions //
     //////////////////////
-    
+
     /// @dev we allow transfers of amount 0
     function transfer(address to, uint256 amount) external returns (bool) {
         if (to == address(0)) {

@@ -7,15 +7,15 @@ contract MockERC20 {
     string public symbol;
     uint8 public decimals;
     address public owner;
-    mapping (address => uint256) public balances;
+    mapping(address => uint256) public balances;
     uint256 public totalSupply;
 
-    modifier onlyOwner {
+    modifier onlyOwner() {
         require(owner == msg.sender, "NotOwner");
         _;
     }
 
-    constructor (string memory _name, string memory _symbol) {
+    constructor(string memory _name, string memory _symbol) {
         name = _name;
         symbol = _symbol;
         decimals = 18;

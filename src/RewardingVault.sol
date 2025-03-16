@@ -11,22 +11,22 @@ interface IERC20 {
 contract RewardingVault {
     // Structs
     struct Reward {
-        uint256 threshold;  // Amount of ETH deposited to be able to claim this reward
-        uint256 ratio;      // Reward ratio in basis points (multiplied by 100)
+        uint256 threshold; // Amount of ETH deposited to be able to claim this reward
+        uint256 ratio; // Reward ratio in basis points (multiplied by 100)
     }
 
     // An ERC-20 token to pay rewards in
     address public rewardToken;
 
     // Mapping from rewardTierId to Reward
-    mapping (uint256 => Reward) public rewardTiers;
+    mapping(uint256 => Reward) public rewardTiers;
     uint256 public rewardCount;
-    
+
     // Mapping from account to balance
-    mapping (address => uint256) public balances;
+    mapping(address => uint256) public balances;
 
     // Mapping from account to rewardTierId to claimed
-    mapping (address => mapping (uint256 => bool) ) claimedRewards;
+    mapping(address => mapping(uint256 => bool)) claimedRewards;
 
     // Fees accrued
     uint256 public accruedFees;
@@ -59,7 +59,7 @@ contract RewardingVault {
     error ThresholdNotReached();
 
     // Modifiers
-    modifier onlyOwner {
+    modifier onlyOwner() {
         if (msg.sender != owner) {
             revert NotOwner();
         }
@@ -88,10 +88,7 @@ contract RewardingVault {
         if (ratio == 0) {
             revert ZeroRatio();
         }
-        rewardTiers[rewardCount] = Reward(
-            threshold,
-            ratio
-        );
+        rewardTiers[rewardCount] = Reward(threshold, ratio);
         rewardCount++;
     }
 
@@ -105,10 +102,7 @@ contract RewardingVault {
         if (ratio == 0) {
             revert ZeroRatio();
         }
-        rewardTiers[rewardTierId] = Reward(
-            threshold,
-            ratio
-        );
+        rewardTiers[rewardTierId] = Reward(threshold, ratio);
     }
 
     function setFeeRatio(uint8 _feeRatio) external onlyOwner {

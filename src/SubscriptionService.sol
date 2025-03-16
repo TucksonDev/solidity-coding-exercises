@@ -12,7 +12,7 @@ contract SubscriptionService {
     address public owner;
 
     // Subscriptions (mapping user => expiryTime)
-    mapping (address => uint256) public subscriptionExpiryTime;
+    mapping(address => uint256) public subscriptionExpiryTime;
 
     // Errors
     error NotOwner();
@@ -37,7 +37,7 @@ contract SubscriptionService {
     }
 
     // Constructor
-    constructor (uint256 _subscriptionFee, uint256 _subscriptionDurationSeconds) {
+    constructor(uint256 _subscriptionFee, uint256 _subscriptionDurationSeconds) {
         if (_subscriptionFee == 0) {
             revert ZeroAmount();
         }
@@ -104,10 +104,7 @@ contract SubscriptionService {
     }
 
     function renew() external payable {
-        if (
-            (subscriptionExpiryTime[msg.sender] == 0) ||
-            (subscriptionExpiryTime[msg.sender] < block.timestamp)
-        ) {
+        if ((subscriptionExpiryTime[msg.sender] == 0) || (subscriptionExpiryTime[msg.sender] < block.timestamp)) {
             // User never had a subscription (== 0) or it expired (< block.timestamp)
             revert InactiveSubscription();
         }

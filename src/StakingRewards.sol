@@ -52,10 +52,7 @@ contract StakingRewards {
         _;
     }
 
-    constructor (
-        address _token,
-        uint16 _rewardRate
-    ) {
+    constructor(address _token, uint16 _rewardRate) {
         if (_token == address(0)) {
             revert ZeroAddress();
         }
@@ -222,11 +219,8 @@ contract StakingRewards {
         }
 
         uint256 secondsPassed = block.timestamp - deposits[depositor].startedAtTimestamp;
-        uint256 rewardsAccrued = (
-            deposits[depositor].amount *
-            secondsPassed *
-            rewardRatePerSecond(deposits[depositor].rewardRate)
-        ) / 1e18;
+        uint256 rewardsAccrued =
+            (deposits[depositor].amount * secondsPassed * rewardRatePerSecond(deposits[depositor].rewardRate)) / 1e18;
 
         pendingRewards[depositor] += rewardsAccrued;
         deposits[depositor].startedAtTimestamp = block.timestamp;

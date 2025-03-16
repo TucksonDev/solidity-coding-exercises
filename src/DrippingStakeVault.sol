@@ -15,13 +15,13 @@ contract DrippingStakeVault {
     }
 
     // Reward token
-    IERC20 immutable public rewardToken;
+    IERC20 public immutable rewardToken;
 
     // User deposits
-    mapping (address => UserDeposit) public deposits;
+    mapping(address => UserDeposit) public deposits;
 
     // User extra claimable rewards
-    mapping (address => uint256) public extraClaimableRewards;
+    mapping(address => uint256) public extraClaimableRewards;
 
     // Dripping rate per block: 0 (0.00%) - 10000 (100.00%)
     uint16 public drippingRate;
@@ -51,10 +51,7 @@ contract DrippingStakeVault {
         _;
     }
 
-    constructor(
-        address _rewardToken,
-        uint16 _drippingRate
-    ) {
+    constructor(address _rewardToken, uint16 _drippingRate) {
         if (_rewardToken == address(0)) {
             revert ZeroAddress();
         }
@@ -98,17 +95,14 @@ contract DrippingStakeVault {
         // Update pending rewards
         if (deposits[msg.sender].amount > 0) {
             uint256 timeElapsed = block.number - deposits[msg.sender].startingBlock;
-            uint256 pendingReward = (deposits[msg.sender].amount * timeElapsed * deposits[msg.sender].drippingRate) / 10000;
+            uint256 pendingReward =
+                (deposits[msg.sender].amount * timeElapsed * deposits[msg.sender].drippingRate) / 10000;
             extraClaimableRewards[msg.sender] += pendingReward;
             currentDeposit = deposits[msg.sender].amount;
         }
 
         // Update deposit
-        deposits[msg.sender] = UserDeposit(
-            currentDeposit + amount,
-            block.number,
-            drippingRate
-        );
+        deposits[msg.sender] = UserDeposit(currentDeposit + amount, block.number, drippingRate);
 
         // Emit event
         emit Deposit(msg.sender, amount, drippingRate);
@@ -125,7 +119,8 @@ contract DrippingStakeVault {
         // Update pending rewards
         if (deposits[msg.sender].amount > 0) {
             uint256 timeElapsed = block.number - deposits[msg.sender].startingBlock;
-            uint256 pendingRewards = (deposits[msg.sender].amount * timeElapsed * deposits[msg.sender].drippingRate) / 10000;
+            uint256 pendingRewards =
+                (deposits[msg.sender].amount * timeElapsed * deposits[msg.sender].drippingRate) / 10000;
             extraClaimableRewards[msg.sender] += pendingRewards;
         }
 
@@ -164,7 +159,7 @@ contract DrippingStakeVault {
         // Effects (to prevent reentrancy attacks)
         deposits[msg.sender].startingBlock = block.number;
         extraClaimableRewards[msg.sender] = 0;
-        
+
         // Note: this will revert if the token doesn't return a value in the transfer function
         bool success = rewardToken.transfer(msg.sender, totalRewards);
         if (!success) {
@@ -177,7 +172,9 @@ contract DrippingStakeVault {
     /////////////
     // Getters //
     /////////////
-    function getDepositData(address depositor) external view
+    function getDepositData(address depositor)
+        external
+        view
         returns (uint256 depositAmount, uint256 depositStartingBlock, uint16 depositDrippingRate)
     {
         depositAmount = deposits[depositor].amount;

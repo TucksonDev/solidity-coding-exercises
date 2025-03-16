@@ -49,7 +49,7 @@ contract DrippingStakeVaultTest is Test {
         vm.deal(alice, amountToDeposit);
 
         uint256 initialBalance = address(vault).balance;
-        
+
         if (amountToDeposit == 0) {
             vm.expectRevert(abi.encodeWithSignature("ZeroAmount()"));
         } else {
@@ -59,11 +59,7 @@ contract DrippingStakeVaultTest is Test {
         vault.deposit{value: amountToDeposit}();
 
         // Check balances
-        (
-            uint256 depositAmount,
-            uint256 depositStartingBlock,
-            uint16 depositDrippingRate
-        ) = vault.getDepositData(alice);
+        (uint256 depositAmount, uint256 depositStartingBlock, uint16 depositDrippingRate) = vault.getDepositData(alice);
 
         assertEq(depositAmount, amountToDeposit);
         if (amountToDeposit > 0) {
@@ -124,7 +120,7 @@ contract DrippingStakeVaultTest is Test {
         // Test claim reward
         uint256 initialBalance = token.balances(alice);
 
-        (uint256 depositAmount,,uint16 depositDrippingRate) = vault.getDepositData(alice);
+        (uint256 depositAmount,, uint16 depositDrippingRate) = vault.getDepositData(alice);
         uint256 timeElapsed = block.number - startingBlock;
         uint256 pendingRewards = depositAmount * timeElapsed * depositDrippingRate / 10000;
 
@@ -137,7 +133,7 @@ contract DrippingStakeVaultTest is Test {
         uint256 finalBalance = token.balances(alice);
         assertEq(finalBalance, initialBalance + pendingRewards);
 
-        (uint256 finalDepositAmount,uint256 finalStartingBlock,) = vault.getDepositData(alice);
+        (uint256 finalDepositAmount, uint256 finalStartingBlock,) = vault.getDepositData(alice);
         assertEq(finalDepositAmount, amountToDeposit);
         assertEq(finalStartingBlock, block.number);
     }

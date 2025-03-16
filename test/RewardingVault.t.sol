@@ -90,7 +90,7 @@ contract RewardingVaultTest is Test {
         // Deposit (should not be enough because of fees)
         vm.prank(alice);
         vault.deposit{value: 1000}();
-        
+
         // Expect the following to revert
         vm.prank(alice);
         vm.expectRevert(abi.encodeWithSignature("ThresholdNotReached()"));
@@ -108,7 +108,7 @@ contract RewardingVaultTest is Test {
 
         // Check token balance
         uint256 aliceBalance = vault.balances(alice);
-        (,uint256 rewardRatio) = vault.rewardTiers(0);
+        (, uint256 rewardRatio) = vault.rewardTiers(0);
         uint256 rewardAmount = (aliceBalance * rewardRatio) / 100;
 
         uint256 aliceTokenBalance = erc20.balances(alice);
@@ -123,7 +123,7 @@ contract RewardingVaultTest is Test {
         vm.expectRevert(abi.encodeWithSignature("RewardAlreadyClaimed()"));
         vault.claimReward(0);
     }
-    
+
     function testFuzz_Withdraw(uint256 amountToDeposit) public {
         // Check for amount boundaries
         if (amountToDeposit == 0) {
@@ -135,11 +135,11 @@ contract RewardingVaultTest is Test {
 
         address alice = makeAddr("alice");
         vm.deal(alice, amountToDeposit);
-        
+
         // Deposit
         vm.prank(alice);
         vault.deposit{value: amountToDeposit}();
-        
+
         // Initial balances
         uint256 initialAliceVaultBalance = vault.balances(alice);
         uint256 initialAliceBalance = address(alice).balance;
@@ -167,11 +167,11 @@ contract RewardingVaultTest is Test {
         assertEq(aliceFinalVaultBalance, initialAliceVaultBalance - amountToWithdraw);
         assertEq(finalAliceBalance, initialAliceBalance + amountToWithdraw);
     }
-    
+
     function testFuzz_WithdrawFees() public {
         address alice = makeAddr("alice");
         vm.deal(alice, 1000000);
-        
+
         // Deposit
         vm.prank(alice);
         vault.deposit{value: 1000000}();
