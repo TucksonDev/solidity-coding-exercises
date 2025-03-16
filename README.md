@@ -213,3 +213,41 @@ Implement a “Subscription Service” smart contract with these rules and const
 **Code**
 
 - Contract: [./src/SubscriptionService.sol](./src/SubscriptionService.sol)
+
+### MultisigWallet
+
+Objective: Implement a simplified multi-signature (multi-sig) wallet in Solidity.
+
+- Key Requirements:
+    - The wallet must support multiple owners (e.g., an array of owner addresses).
+    - There should be a threshold (say requiredConfirmations) indicating how many owner confirmations are needed before a transaction can be executed.
+    - Owners can propose a transaction (e.g., transfer Ether to some recipient, or call an external contract with specific data).
+    - Other owners can confirm the proposed transaction.
+    - Once the required number of owners have confirmed, the transaction becomes executable.
+    - No additional functionality (such as revoking confirmations) is strictly required, but it’s a plus if included.
+
+- Minimal Contract Interface:
+    - You should define functions that allow:
+        - constructor: Accept the list of owners and the required number of confirmations.
+        - submitTransaction: Allows an owner to propose a new transaction.
+        - confirmTransaction: Allows an owner to confirm a transaction.
+        - executeTransaction: Once enough confirmations are gathered, executes the transaction.
+
+- Security Considerations:
+    - Ensure only valid owners can call these methods.
+    - Check that the transaction hasn’t already been executed.
+    - If you want to handle Ether, consider the fallback or receive function, or rely on external funding.
+
+**Code**
+
+- Contract: [./src/MultisigWallet.sol](./src/MultisigWallet.sol)
+
+## Other contracts
+
+### BlockFiller
+
+Contract that tries to fill an entire block with a gas limit of 32,000,000
+
+**Code**
+
+- Contract: [./src/BlockFiller.sol](./src/BlockFiller.sol)
