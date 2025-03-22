@@ -242,6 +242,71 @@ Objective: Implement a simplified multi-signature (multi-sig) wallet in Solidity
 
 - Contract: [./src/MultisigWallet.sol](./src/MultisigWallet.sol)
 
+### UpgradeableMultisig
+
+You will implement a simple multi-signature (multi-sig) wallet contract that is upgradeable. Specifically:
+
+Core multi-sig functionality:
+
+- The contract will have multiple owners, each with an address stored on-chain.
+- Any owner can propose a transaction to call an external contract (or a simple ETH transfer) from the multi-sig wallet.
+- The transaction must gather a certain threshold of approvals (e.g., >50% of owners) to be executable.
+- Once the threshold is met, anyone can trigger the execution of the transaction.
+
+Upgradeable pattern:
+
+- Implement a basic upgradeable mechanism (e.g., a Proxy + Implementation logic).
+- You do not need a separate script or contract for the proxy if you prefer to demonstrate a minimal inline approach. But there must be a clear separation between:
+- Proxy (which holds the storage)
+- Logic/Implementation contract (which contains the functions)
+
+Requirements:
+
+- Demonstrate how owners are set initially.
+- Show how the threshold is determined (e.g., constructor param or function).
+- Outline how proposals are submitted, approved, and executed.
+- Implement at least one basic security measure (e.g., a check to prevent re-entrancy or to ensure only owners can approve).
+- You do not have to create tests or scripts; just implement the core contract logic.
+
+Nice-to-have features (not strictly required, but you can include if you have time):
+
+- An event for each step in the multi-sig (submission, approval, execution).
+- A function that allows an owner to remove themselves or add a new owner (with some form of threshold vote).
+
+**Code**
+
+- Contract: [./src/UpgradeableMultisig.sol](./src/UpgradeableMultisig.sol)
+
+### VestingVault
+
+Your task is to create a smart contract named VestingVault.sol that securely handles token vesting schedules for multiple beneficiaries. You will be evaluated on correctness, efficiency, security considerations, and readability.
+
+Requirements:
+
+- Contract Name: VestingVault
+
+Functionality:
+- The contract is deployed by an owner who can register multiple beneficiaries, each with their own vesting schedule.
+- Each beneficiary has a unique vesting schedule consisting of:
+    - Total amount of ERC20 tokens allocated.
+    - Start time (UNIX timestamp).
+    - Cliff period (in seconds, from start time).
+    - Vesting duration (after the cliff, linear vesting until the entire allocation is released).
+- Beneficiaries can withdraw only their vested tokens at any point after the cliff period. Tokens - should accumulate linearly over time after the cliff.
+
+Conditions:
+- The owner can register beneficiaries only once per beneficiary address.
+- Beneficiaries cannot withdraw more than their vested tokens.
+- The smart contract should not rely on external price feeds or oracle services.
+
+Security considerations:
+- Protect against common vulnerabilities like re-entrancy and integer overflows/underflows.
+- Ensure access control and state updates follow Solidity best practices.
+
+**Code**
+
+- Contract: [./src/VestingVault.sol](./src/VestingVault.sol)
+
 ## Other contracts
 
 ### BlockFiller
