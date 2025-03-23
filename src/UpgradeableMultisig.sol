@@ -54,21 +54,23 @@ contract MultisigSimpleProxy {
         }
 
         implementation = newImplementation;
-        (bool success,) = implementation.delegatecall(abi.encodeWithSignature("initialize(address[], uint256)", multisigOwners, multisigConfirmationThreshold));
+        (bool success,) = implementation.delegatecall(
+            abi.encodeWithSignature("initialize(address[], uint256)", multisigOwners, multisigConfirmationThreshold)
+        );
         if (!success) {
             revert CallFailed();
         }
     }
 
-    fallback() payable external {
+    fallback() external payable {
         (bool success,) = implementation.delegatecall(msg.data);
         if (!success) {
             revert CallFailed();
         }
     }
-    
+
     // We need to hold funds to execute multisig transactions
-    receive() payable external {}
+    receive() external payable {}
 }
 
 contract Multisig {
@@ -82,7 +84,7 @@ contract Multisig {
         address to;
         uint256 value;
         bytes data;
-        mapping (address => bool) ownerConfirmations;
+        mapping(address => bool) ownerConfirmations;
         uint256 confirmations;
         bool executed;
     }
@@ -92,7 +94,7 @@ contract Multisig {
 
     // Owners
     // We use a mapping for its simplicity on adding/removing owners
-    mapping (address => bool) public owners;
+    mapping(address => bool) public owners;
     uint256 public ownerCount;
 
     // Confirmation threshold
@@ -101,7 +103,7 @@ contract Multisig {
 
     // Transactions
     // Mapping nonce => transaction data
-    mapping (uint256 => Transaction) public transactions;
+    mapping(uint256 => Transaction) public transactions;
     uint256 public currentNonce;
 
     // Errors
@@ -120,7 +122,9 @@ contract Multisig {
     event NewOwnersAdded(uint256 ownerCount);
     event OwnerRemoved(address indexed removedOwner);
     event ConfirmationThresholdSet(uint256 confirmationThreshold);
-    event TransactionProposed(uint256 indexed nonce, address indexed owner, address indexed to, uint256 value, bytes data);
+    event TransactionProposed(
+        uint256 indexed nonce, address indexed owner, address indexed to, uint256 value, bytes data
+    );
     event TransactionConfirmed(uint256 indexed nonce, address indexed owner);
     event TransactionExecuted(uint256 indexed nonce);
 
@@ -237,7 +241,7 @@ contract Multisig {
 
         currentNonce++;
 
-        emit TransactionProposed(currentNonce-1, msg.sender, _to, _value, _data);
+        emit TransactionProposed(currentNonce - 1, msg.sender, _to, _value, _data);
     }
 
     // Confirm function
@@ -259,7 +263,7 @@ contract Multisig {
     // We could open for anyone to execute a transcation (since it's already been confirmed),
     // but we limit it to owners in case they want to have control on when to execute the transaction
     // Transactions are paid with funds on the contract and funds sent through this function
-    function execute(uint256 nonce) payable external onlyOwner returns (bytes memory) {
+    function execute(uint256 nonce) external payable onlyOwner returns (bytes memory) {
         if (transactions[nonce].executed) {
             revert AlreadyExecuted();
         }
@@ -273,7 +277,8 @@ contract Multisig {
         transactions[nonce].executed = true;
 
         // We try to execute
-        (bool success, bytes memory returnedData) = address(transactions[nonce].to).call{value: transactions[nonce].value}(transactions[nonce].data);
+        (bool success, bytes memory returnedData) =
+            address(transactions[nonce].to).call{value: transactions[nonce].value}(transactions[nonce].data);
         if (!success) {
             revert CallFailed();
         }

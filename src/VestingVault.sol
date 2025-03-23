@@ -10,11 +10,11 @@ contract VestingVault {
     // cliffPeriodInSeconds and vestDurationAfterCliffInSeconds are packed together in the same slots
     // (max amount of seconds used must be below 2^128-1)
     struct Vest {
-        uint256 amount;                             // Tokens vested
+        uint256 amount; // Tokens vested
         uint256 claimedAmount;
-        uint256 startTimestamp;                     // Start timestamp
-        uint128 cliffPeriodInSeconds;               // Seconds of cliff period
-        uint128 vestDurationAfterCliffInSeconds;    // Vest duration in seconds (linear vesting)
+        uint256 startTimestamp; // Start timestamp
+        uint128 cliffPeriodInSeconds; // Seconds of cliff period
+        uint128 vestDurationAfterCliffInSeconds; // Vest duration in seconds (linear vesting)
     }
 
     // Constants
@@ -27,7 +27,7 @@ contract VestingVault {
     IERC20 public token;
 
     // Beneficiaries
-    mapping (address => Vest) public beneficiaries;
+    mapping(address => Vest) public beneficiaries;
 
     // Errors
     error NotOwner();
@@ -42,17 +42,22 @@ contract VestingVault {
     error AmountTooHigh();
 
     // Events
-    event BeneficiaryAdded(address indexed beneficiary, uint256 amount, uint128 cliffPeriodInSeconds, uint128 vestDurationAfterCliffInSeconds);
+    event BeneficiaryAdded(
+        address indexed beneficiary,
+        uint256 amount,
+        uint128 cliffPeriodInSeconds,
+        uint128 vestDurationAfterCliffInSeconds
+    );
     event TokensWithdrawn(address indexed beneficiary, uint256 amount);
 
-    modifier onlyOwner {
+    modifier onlyOwner() {
         if (msg.sender != owner) {
             revert NotOwner();
         }
         _;
     }
 
-    constructor (address _token) {
+    constructor(address _token) {
         if (_token == address(0)) {
             revert ZeroAddress();
         }
@@ -89,13 +94,8 @@ contract VestingVault {
         }
 
         // Saving the beneficiary information
-        beneficiaries[beneficiary] = Vest(
-            amount,
-            0,
-            block.timestamp,
-            cliffPeriodInSeconds,
-            vestDurationAfterCliffInSeconds
-        );
+        beneficiaries[beneficiary] =
+            Vest(amount, 0, block.timestamp, cliffPeriodInSeconds, vestDurationAfterCliffInSeconds);
 
         // We send the tokens to the contract
         // (we use safeTransferFrom so the call reverts if this fails)
@@ -136,9 +136,11 @@ contract VestingVault {
         if (block.timestamp < vestingInformation.startTimestamp + vestingInformation.cliffPeriodInSeconds) {
             revert CliffPeriod();
         }
-        uint256 timeElapsed = block.timestamp - (vestingInformation.startTimestamp + vestingInformation.cliffPeriodInSeconds);
+        uint256 timeElapsed =
+            block.timestamp - (vestingInformation.startTimestamp + vestingInformation.cliffPeriodInSeconds);
 
-        uint256 vestingRatePerMilliSecond = (vestingInformation.amount * 1000 / vestingInformation.vestDurationAfterCliffInSeconds);
+        uint256 vestingRatePerMilliSecond =
+            (vestingInformation.amount * 1000 / vestingInformation.vestDurationAfterCliffInSeconds);
         uint256 unlockedTokens = timeElapsed * vestingRatePerMilliSecond / 1000;
 
         if (vestingInformation.claimedAmount > unlockedTokens) {
