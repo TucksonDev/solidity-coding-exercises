@@ -307,6 +307,67 @@ Security considerations:
 
 - Contract: [./src/VestingVault.sol](./src/VestingVault.sol)
 
+## ArbitratedEscrow
+
+You are tasked to create a decentralized escrow contract in Solidity that securely manages funds between two parties—a buyer and a seller—facilitating trustless transactions. To handle disputes transparently, the contract involves a third-party arbitrator that can intervene to settle conflicts.
+
+Your Contract Should Include:
+
+- Roles & Permissions:
+    - A buyer, seller, and arbitrator.
+    - Only the buyer can deposit funds.
+    - Only the arbitrator can intervene in disputes.
+
+- Escrow Flow:
+    - Buyer deposits the payment, initiating escrow.
+    - Seller can withdraw the funds only after the buyer explicitly confirms delivery of the goods/services.
+    - Buyer can initiate a dispute which freezes the escrow.
+
+- Dispute Management (Arbitration):
+    - When a dispute is raised, funds are locked until the arbitrator makes a decision.
+    - The arbitrator can resolve in favor of either the buyer or seller, triggering a fund transfer accordingly.
+    - Clearly defined outcomes for arbitrator’s intervention.
+
+- Security Considerations:
+    - Ensure proper handling of edge-cases, such as repeated function calls, reentrancy protection, and strict access control.
+
+- Additional Rules:
+    - Use Solidity ^0.8.20 or later.
+    - Clearly document your logic using NatSpec style documentation.
+
+**Code**
+
+- Contract: [./src/ArbitratedEscrow.sol](./src/ArbitratedEscrow.sol)
+
+## TimelockedMultisigWallet
+
+Implement a multi-signature wallet with a built-in timelock mechanism.
+
+Requirements:
+
+- Multi-Signature
+    - There should be a list of owners, each with an address stored in the contract’s state.
+    - A minimum number of owners (quorum) must approve a transaction before it can be queued for execution.
+
+- Timelock
+    - After enough owners have approved a transaction, the transaction is queued.
+    - There must be a configurable time delay (e.g., set in the constructor) that elapses before the transaction can be executed.
+
+- Queueing and Execution
+    - Each transaction to be executed must be “queued” by the contract, which includes storing relevant data:
+        - target address, function call data, value, and the earliest execution time.
+    - Only after the timelock delay has passed can an approved transaction be executed.
+    - Transactions expire if not executed within a certain grace period (another parameter).
+
+- Extra Considerations
+    - Think about preventing replay attacks (e.g., re-using transaction data).
+    - Handle edge cases like removing an owner, changing the quorum, or changing the timelock delay (if time allows).
+    - Provide functions to add or remove owners (optional if time is tight, but good to demonstrate advanced knowledge).
+
+**Code**
+
+- Contract: [./src/TimelockedMultisigWallet.sol](./src/TimelockedMultisigWallet.sol)
+
 ## Other contracts
 
 ### BlockFiller
